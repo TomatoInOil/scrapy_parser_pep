@@ -39,7 +39,7 @@ class PepParsePipeline:
             BASE_DIR / f"status_summary_{self.time}.csv", "a", newline=""
         ) as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=STATUS_SUM_FIELDS)
-            for status, number in self.summary_data.items():
+            for status, number in sorted(self.summary_data.items()):
                 writer.writerow({STATUS_COL: status, SUMMARY_COL: number})
             writer.writerow({STATUS_COL: "Total", SUMMARY_COL: self.total})
         spider.close()
