@@ -6,13 +6,15 @@ from pep_parse.items import PepParseItem
 
 
 class PepSpider(scrapy.Spider):
+    """Сбор информации о статусах PEP."""
+
     name = "pep"
     allowed_domains = ["peps.python.org"]
-    start_urls = ["http://peps.python.org/"]
+    start_urls = ["https://peps.python.org/"]
 
     def parse(self, response):
         all_peps = response.xpath(
-            "//section[@id='numerical-index']//a[starts-with(@href, '/pep-')]/@href"
+            "//section[@id='numerical-index']//td[a][1]/a[starts-with(@href, '/pep-')]/@href"
         ).getall()
         for pep in all_peps:
             yield response.follow(pep, self.parse_pep)
@@ -20,7 +22,7 @@ class PepSpider(scrapy.Spider):
     def parse_pep(self, response):
         data = {}
         pep_title_pattern = (
-            r"PEP (?P<number>\d+) \S (?P<name>(\w+\s?)+) | peps.python.org"
+            r"PEP (?P<number>\d+) \S (?P<name>.+) \| peps\.python\.org"
         )
         title_match = re.match(
             pep_title_pattern, response.xpath("//title/text()").get()
