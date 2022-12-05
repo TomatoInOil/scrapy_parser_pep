@@ -15,7 +15,7 @@ class PepParsePipeline:
     def open_spider(self, spider):
         self.time = (
             dt.now(timezone.utc)
-            .isoformat(timespec="seconds")
+            .isoformat(timespec="seconds")[:-6]
             .replace(":", "-")
         )
         with open(
